@@ -1,8 +1,11 @@
 package com.example.happy
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MenuItem
+import android.view.View
+import android.widget.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.happy.ui.theme.HappyTheme
+import com.google.android.material.navigation.NavigationBarView
 
 class MainActivity : ComponentActivity() {
 
@@ -26,114 +30,133 @@ class MainActivity : ComponentActivity() {
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main1)  // Sets the content view to main.xml
+        setContentView(R.layout.doitien)
 
-        tvDisPlay = findViewById(R.id.tvDisplay);
-        val btnAdd : Button = findViewById(R.id.buttonAdd);
-        val btnDiv : Button = findViewById(R.id.buttonDiv);
-        val btnMul : Button = findViewById(R.id.buttonMul);
-        val btnSub : Button = findViewById(R.id.buttonSub);
+        val vietnam = mapOf("US" to 1/25641f, "Viet Nam" to 1.0/1f, "Japan" to 1.0/166f, "Korea" to 1.0/18f)
+        val korea = mapOf("US" to 72.0/100f, "Viet Nam" to 18/1f, "Japan" to 1.0/9f, "Korea" to 1f)
+        val us = mapOf("US" to 1f, "Viet Nam" to 25353f, "Japan" to 152.955f, "Korea" to 1384.25f)
+        val japan = mapOf("US" to 654/100000f, "Viet Nam" to 165.744f, "Japan" to 1f, "Korea" to 9.046f)
 
-        val btnC : Button = findViewById(R.id.buttonC);
-        val btnCE : Button = findViewById(R.id.buttonCE);
-        val btnBS : Button = findViewById(R.id.buttonBS);
-        val btnEqual: Button = findViewById(R.id.buttonEqual);
 
-        val btnDot : Button = findViewById(R.id.buttonDot);
-        val btnPlusMinus : Button = findViewById(R.id.buttonSign);
+        val change = mapOf("Viet Nam" to vietnam, "Korea" to korea, "US" to us, "Japan" to japan)
+        var type1 = ""
+        var type2 = ""
 
-        val btn1 : Button = findViewById(R.id.button1);
-        val btn2 : Button = findViewById(R.id.button2);
-        val btn3 : Button = findViewById(R.id.button3);
-        val btn4 : Button = findViewById(R.id.button4);
-        val btn5 : Button = findViewById(R.id.button5);
-        val btn6 : Button = findViewById(R.id.button6);
-        val btn7 : Button = findViewById(R.id.button7);
-        val btn8 : Button = findViewById(R.id.button8);
-        val btn9 : Button = findViewById(R.id.button9);
-        val btn0 : Button = findViewById(R.id.button0);
+        val listItem = arrayOf("Viet Nam", "US", "Japan", "Korea")
 
-        val inputs = listOf(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0);
-        for(input in inputs ){
-            input.setOnClickListener{
-                onNumberInput(input.text.toString());
+        val adapter: ArrayAdapter<String> = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            listItem
+        )
+
+        val spinner1: Spinner = findViewById(R.id.spinner1)
+        val spinner2: Spinner = findViewById(R.id.spinner2)
+
+        spinner1.adapter = adapter
+        spinner2.adapter = adapter
+
+        val inputText1: EditText = findViewById(R.id.input1)
+        val inputText2: EditText = findViewById(R.id.input2)
+
+        spinner1.onItemSelectedListener = object : NavigationBarView.OnItemSelectedListener, AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                type1 = listItem[p2]
+                inputText1.setText("")
+                inputText2.setText("0")
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                type1 = listItem[0]
+            }
+
+            override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                TODO("Not yet implemented")
             }
         }
-        val opera = listOf(btnAdd, btnDiv, btnMul, btnSub);
-        for(input in opera){
-            input.setOnClickListener{
-                onOperaInput(input.text.toString());
+
+        spinner2.onItemSelectedListener = object : NavigationBarView.OnItemSelectedListener, AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                type2 = listItem[p2]
+                inputText2.setText("")
+                inputText1.setText("0")
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                type2 = listItem[0]
+            }
+
+            override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                TODO("Not yet implemented")
             }
         }
 
-
-        btnCE.setOnClickListener{
-            cInput = "";
-            op1 = null;
-            op = null;
-            tvDisPlay.text ="";
+        inputText1.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Khi editText1 được focus
+                inputText1.setText("")
+                inputText2.setText("0")
+            }
         }
-        btnC.setOnClickListener{
-            cInput = "";
-            tvDisPlay.text = "";
+
+        inputText2.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Khi editText1 được focus
+                inputText2.setText("")
+                inputText1.setText("0")
+            }
         }
-        btnEqual.setOnClickListener{process()};
 
-    }
+        inputText1.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-    private fun onOperaInput(opp : String) {
-        if(cInput.isNotEmpty()){
-            op1 = cInput.toInt();
-            cInput = "";
-            op = opp;
-        }
-        tvDisPlay.text = tvDisPlay.text.toString() + op;
-    }
+            }
 
-    private fun onNumberInput(number: String) {
-        cInput = cInput + number;
-        tvDisPlay.text = tvDisPlay.text.toString() + cInput;
-    }
-    private fun process(){
-        if(op1 != null && op != null && cInput.isNotEmpty()){
-            op2 = cInput.toInt();
-            var rs : Int? = null;
-            while(true){
-                if(op == "+"){
-                    rs = op1!! + op2!!;
-                    break;
-                }
-                if(op == "-"){
-                    rs = op1!! - op2!!;
-                    break;
-                }
-                if(op == "*"){
-                    rs = op1!! * op2!!;
-                    break;
-                }
-                if(op == "/"){
-                    if(op2 != 0){
-                        rs = op1!!/ op2!!;
-                        break;
-                    }else{
-                        tvDisPlay.text = "Syntax Error";
-                        break;
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                if (inputText1.isFocused) {
+                    if (p0 != null) {
+                        if (p0.isNotEmpty()) {
+                            var input1 = p0.toString().toInt()
+                            var rate = change[type1]?.get(type2)?.toFloat()
+                            var num2 = input1 * rate!!
+                            inputText2.setText("$num2")
+                        }
                     }
                 }
             }
 
-            if(rs != null){
-                tvDisPlay.text = rs.toString();
-                cInput = rs.toString();
-                op1 = null;
-                op = null;
+        })
+
+        inputText2.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
             }
 
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+            }
 
-        }
+            override fun afterTextChanged(p0: Editable?) {
+                if (inputText2.isFocused) {
+                    if (p0 != null) {
+                        if (p0.isNotEmpty()) {
+                            var input2 = p0.toString().toFloat()
+                            var rate = change[type2]?.get(type1)?.toFloat()
+                            var num1 = input2 * rate!!
+                            inputText1.setText("$num1")
+                        }
+                    }
+                }
+            }
+
+        })
     }
 
 
