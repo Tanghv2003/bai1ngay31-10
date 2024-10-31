@@ -2,4 +2,11 @@
     <string name="app_name">Happy</string>
     <string name="currency">Currency</string>
     <string name="_0">0</string>
+    <string name="s_ch_nh_ph_ng">Số chính phương</string>
+    <string name="textview">TextView</string>
+    <string name="s_ch_n">Số chẵn</string>
+    <string name="s_l">Số_lẻ</string>
+    <string name="show">SHOW</string>
+    <string name="hint">hint</string>
+    <string name="scp">Số chính phương</string>
 </resources>
